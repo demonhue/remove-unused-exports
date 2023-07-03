@@ -2,12 +2,12 @@ const PathResolver = require("../path-utils/pathResolver.js").default;
 const path = require('path');
 const fs = require('fs');
 const getExportsAndImports = require("./getExportsAndImports").default;
-const checkDirectory = require("../path-utils/checkDirectory.js").default;
+const {isUnderAnyMustHaveDirectory} = require("../path-utils/checkDirectory.js");
 
 function traverseDir(dir, pr, allExports,importVariable) {
   fs.readdirSync(dir).forEach((file) => {
     let fullPath = path.join(dir, file);
-    if(!checkDirectory(fullPath)){
+    if(!isUnderAnyMustHaveDirectory(fullPath)){
       return;
     }
     if (fs.lstatSync(fullPath).isDirectory()) {
@@ -87,8 +87,8 @@ exports.default = function getUnusedExports(inputFolderLocation){
         );
     });
   */
-  // console.log("allExports: ",allExports);
-  // console.log("importVariable",importVariable);
+  console.log("allExports: ",allExports);
+  console.log("importVariable",importVariable);
   const unusedExports = allExports.filter(
     (value) => !importVariable.has(combine(value.from, value.exportedName))
   );

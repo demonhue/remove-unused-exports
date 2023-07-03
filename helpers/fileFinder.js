@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require("path");
-const checkDirectory = require("../path-utils/checkDirectory").default;
+const {isUnderAnyMustHaveDirectory} = require("../path-utils/checkDirectory");
 
 function getExtension(filename) {
     return filename.split(".").pop();
@@ -20,7 +20,7 @@ const inputFileLocations = [];
 function traverseDir(dir) {
     fs.readdirSync(dir).forEach((file) => {
         let fullPath = path.join(dir, file);
-        if(!checkDirectory(fullPath)){
+        if(!isUnderAnyMustHaveDirectory(fullPath)){
             return;
         }
         if (fs.lstatSync(fullPath).isDirectory()) {

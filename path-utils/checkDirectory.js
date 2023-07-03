@@ -16,7 +16,8 @@ function isUnderAnyMustHaveDirectory(fileLocation){//these parts can be optimize
   }
   return false;
 }
-
+exports.isUnderAnExcludedDirectory = isUnderAnExcludedDirectory;
+exports.isUnderAnyMustHaveDirectory = isUnderAnyMustHaveDirectory;
 exports.default = function checkDirectory(fileLocation){
   //console.log(fileLocation, !isUnderAnExcludedDirectory(fileLocation),isUnderAnyMustHaveDirectory(fileLocation));
   //return true;

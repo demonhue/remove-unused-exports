@@ -47,6 +47,7 @@ exports.default = function (code, fileLocation, pr) {
             exportedName: node.declaration.id.name,
             from: fileLocation,
           });
+          console.log("Got Export: ",exportsAndImports.exportedVariables.slice(-1));
         }
         else if(node.declaration.declarations){
           node.declaration.declarations.forEach(value => {
@@ -56,6 +57,7 @@ exports.default = function (code, fileLocation, pr) {
                 exportedName: value.id.name,
                 from: fileLocation,
               });
+              console.log("Got Export: ",exportsAndImports.exportedVariables.slice(-1));
             }
             else if(value.id.tsconfigoperties){//Case6
               value.id.tsconfigoperties.forEach(x => {
@@ -64,6 +66,7 @@ exports.default = function (code, fileLocation, pr) {
                   exportedName: x.key.name,
                   from: fileLocation,
                 });
+                console.log("Got Export: ",exportsAndImports.exportedVariables.slice(-1));
               });
             }
             else if(value.id.elements){//Case5
@@ -73,7 +76,8 @@ exports.default = function (code, fileLocation, pr) {
                   localName: value.init.name,
                   exportedName: x.name,
                   from: fileLocation,
-                })
+                });
+                console.log("Got Export: ",exportsAndImports.exportedVariables.slice(-1));
               });
             }
           });
@@ -88,12 +92,14 @@ exports.default = function (code, fileLocation, pr) {
                   exportedName: value.exported.value,
                   from: fileLocation,
                 });
+                console.log("Got Export: ",exportsAndImports.exportedVariables.slice(-1));
               }else if(value.exported.type === "Identifier"){//Case4
                 exportsAndImports.exportedVariables.push({
                   localName: value.local.name,
                   exportedName: value.exported.name,
                   from: fileLocation,
                 });
+                console.log("Got Export: ",exportsAndImports.exportedVariables.slice(-1));
               }
             });
           }
@@ -107,24 +113,28 @@ exports.default = function (code, fileLocation, pr) {
                 importedName: undefined,
                 from: absoluteAddressOfSource//use the source
               });
+              console.log("Got Import: ",exportsAndImports.importedVariables.slice(-1));
               exportsAndImports.exportedVariables.push({
                 localName: undefined,
                 exportedName: value.exported.name,
                 from: fileLocation,//use the file's location
                 relativeAddressOfSource: path.node.source.value
               });
+              console.log("Got Export: ",exportsAndImports.exportedVariables.slice(-1));
             } else if(value.type === "ExportSpecifier"){//Case8
               exportsAndImports.importedVariables.push({
                 localName: value.local.name,
                 importedName: value.local.name,
                 from: absoluteAddressOfSource//use the source
               });
+              console.log("Got Import: ",exportsAndImports.importedVariables.slice(-1));
               exportsAndImports.exportedVariables.push({
                 localName: value.local.name,
                 exportedName: value.exported.name,
                 from: fileLocation,//use the file's location
                 relativeAddressOfSource: path.node.source.value
               });
+              console.log("Got Export: ",exportsAndImports.exportedVariables.slice(-1));
             }
           });
         }
@@ -136,6 +146,7 @@ exports.default = function (code, fileLocation, pr) {
         exportedName:"default",
         from: fileLocation
       });
+      console.log("Got Export: ",exportsAndImports.exportedVariables.slice(-1));
     },
     ExportAllDeclaration(path){
       const absoluteAddressOfSource = getAbsoluteAddressOfSource(path);
@@ -145,11 +156,13 @@ exports.default = function (code, fileLocation, pr) {
         importedName: undefined,//meaning everything is imported
         from: absoluteAddressOfSource//use the source
       });
+      console.log("Got Import: ",exportsAndImports.importedVariables.slice(-1));
       exportsAndImports.exportedVariables.push({
         localName:undefined,
         exportedName:undefined,
         from: fileLocation//this file's location
       });
+      console.log("Got Export: ",exportsAndImports.exportedVariables.slice(-1));
     },
     ImportDeclaration(path) {
       const absoluteAddressOfSource = getAbsoluteAddressOfSource(path);
@@ -163,6 +176,7 @@ exports.default = function (code, fileLocation, pr) {
               localName: value.local.name,
               from: absoluteAddressOfSource,
             })
+            console.log("Got Import: ",exportsAndImports.importedVariables.slice(-1));
           } else {
             exportsAndImports.importedVariables.push({
               importedName:
@@ -172,6 +186,7 @@ exports.default = function (code, fileLocation, pr) {
               localName: value.local.name,
               from: absoluteAddressOfSource,
             })
+            console.log("Got Import: ",exportsAndImports.importedVariables.slice(-1));
           }
         });
       }
