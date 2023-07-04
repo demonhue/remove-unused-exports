@@ -3,7 +3,7 @@ const traverse = require("@babel/traverse").default;
 const joinPath = require("path").join;
 const extensionResolver = require("../path-utils/extensionResolver").default;
 
-exports.default = function (code, fileLocation, pr) {
+exports.default = function (code, fileLocation, pr,shouldBeNodeModule) {
   const exportsAndImports = {
     importedVariables: [],
     exportedVariables: [],
@@ -23,6 +23,7 @@ exports.default = function (code, fileLocation, pr) {
     if(absoluteAddressOfSourceWithExtension==undefined){
       console.log(`WARNING: couldn't find import source '${addressOfSource}' in file '${fileLocation}'.\nI HOPE '${addressOfSource}' IS A NODE MODULE.`);
       console.log(absoluteAddressOfSource);
+      shouldBeNodeModule.add(addressOfSource);
     }
     return absoluteAddressOfSourceWithExtension;
   }

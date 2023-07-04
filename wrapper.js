@@ -29,6 +29,7 @@ let lastUnusedExportsStringified;
 const maxBigIteration = 10, maxSmallIteration = 10;
 let totalBigIteration = 0;
 process.stdout._handle.setBlocking(true);
+const shouldBeNodeModule = new Set(); 
 while (totalBigIteration<=maxBigIteration) {
   totalBigIteration++;
   inputFileLocations.forEach((file) => {
@@ -46,8 +47,7 @@ while (totalBigIteration<=maxBigIteration) {
   // let unusedExportsByFile = analyzeTsConfig(relativePathOfTsConfigFile);
   //let unusedExportsByFile = analyzeTsConfig(relativePathOfTsConfigFile,["--ignoreLocallyUsed=true"]);//////
 
-
-  let unusedExportsByFile = getUnusedExports(inputFolderLocation);
+  let unusedExportsByFile = getUnusedExports(inputFolderLocation,shouldBeNodeModule);
   console.log("\n\nList of unusedExports: ",unusedExportsByFile,"\n");
 
   //Processing unusedExportsByFile (ignoring pages folder and if exportName is undefined or empty)
@@ -97,7 +97,9 @@ inputFileLocations.forEach((file) => {
       console.log(e);
     }
   }
-})
+});
+
+console.log("Should be node module: ",shouldBeNodeModule);
 
 
 

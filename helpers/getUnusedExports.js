@@ -4,7 +4,7 @@ const fs = require('fs');
 const getExportsAndImports = require("./getExportsAndImports").default;
 const {isUnderAnyMustHaveDirectory} = require("../path-utils/checkDirectory.js");
 
-function traverseDir(dir, pr, allExports,importVariable) {
+function traverseDir(dir, pr, allExports,importVariable,shouldBeNodeModule) {
   fs.readdirSync(dir).forEach((file) => {
     let fullPath = path.join(dir, file);
     if(!isUnderAnyMustHaveDirectory(fullPath)){
@@ -17,10 +17,10 @@ function traverseDir(dir, pr, allExports,importVariable) {
         const pathToTsConfig = path.join(fullPath,directories[index]);
         //console.log("tsconfig inside :",pathToTsConfig);
         const newpr = new PathResolver(pathToTsConfig);
-        traverseDir(fullPath, newpr, allExports, importVariable);
+        traverseDir(fullPath, newpr, allExports, importVariable,shouldBeNodeModule);
       }
       else {
-        traverseDir(fullPath, pr, allExports, importVariable);
+        traverseDir(fullPath, pr, allExports, importVariable,shouldBeNodeModule);
       }
     }else {
       function getExtension(filename) {
@@ -39,7 +39,7 @@ function traverseDir(dir, pr, allExports,importVariable) {
         return;
       }
       try {
-        const { exportedVariables, importedVariables } = getExportsAndImports(fs.readFileSync(fullPath).toString(),fullPath,pr);
+        const { exportedVariables, importedVariables } = getExportsAndImports(fs.readFileSync(fullPath).toString(),fullPath,pr,shouldBeNodeModule);
         for (const exportedVariable of exportedVariables){
           allExports.push(exportedVariable);
         }
@@ -60,12 +60,12 @@ function combine(a, b) {
   return a + "+" + b;
 }
 
-exports.default = function getUnusedExports(inputFolderLocation){
+exports.default = function getUnusedExports(inputFolderLocation,shouldBeNodeModule){
   let allExports = [];
   let importVariable = new Set();
   
   const pr = new PathResolver(path.join(inputFolderLocation,"tsconfig.json"));
-  traverseDir(inputFolderLocation,pr,allExports,importVariable);
+  traverseDir(inputFolderLocation,pr,allExports,importVariable,shouldBeNodeModule);
 
 
   /*
